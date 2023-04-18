@@ -1,0 +1,44 @@
+version: 2.1
+
+orbs:
+  python: cjw296/python-ci@3.2
+
+jobs:
+  machine-run-tests:
+    parameters:
+      steps:
+        type: steps
+        default: []
+    machine:
+      image: ubuntu-2204:2023.02.1
+    steps:
+      - checkout
+      - run: "python3 -m pip install -r requirements.txt"
+      - steps: << parameters.steps >>
+
+common: &common
+
+workflows:
+  push:
+    jobs:
+      - machine-run-tests:
+          name: docker-with-dockerpy
+          steps:
+            - run: "docker --version"
+            - run: "python3 dockerpy-reproducer.py all"
+      - machine-run-tests:
+          name: podman-with-podmanpy
+          steps:
+            - run: "sudo apt-get remove docker-ce"
+            - run: "sudo apt-get install podman"
+            - run: "systemctl --user start podman.socket"
+            - run: "podman --version"
+            - run: "CONTAINER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock python3 podmanpy-reproducer.py all"
+      - machine-run-tests:
+          name: podman-with-dockerpy
+          steps:
+            - run: "sudo apt-get remove docker-ce"
+            - run: "sudo apt-get install podman"
+            - run: "systemctl --user start podman.socket"
+            - run: "podman --version"
+            - run: "DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock python3 dockerpy-reproducer.py all"
