@@ -36,6 +36,14 @@ workflows:
             - run: "podman info"
             - run: "CONTAINER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock python3 podmanpy-reproducer.py all"
       - machine-run-tests:
+          name: podman-latest-with-podmanpy
+          steps:
+            - run: "sudo apt-get remove docker-ce"
+            - run: "./podman-latest.sh"
+            - run: "systemctl --user start podman.socket"
+            - run: "podman info"
+            - run: "CONTAINER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock python3 podmanpy-reproducer.py all"
+      - machine-run-tests:
           name: podman-with-dockerpy
           steps:
             - run: "sudo apt-get remove docker-ce"
