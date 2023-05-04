@@ -30,6 +30,7 @@ workflows:
           name: podman-with-podmanpy
           steps:
             - run: "sudo apt-get remove docker-ce"
+            - run: "sudo apt-get update"
             - run: "sudo apt-get install podman"
             - run: "systemctl --user start podman.socket"
             - run: "podman info"
@@ -38,6 +39,7 @@ workflows:
           name: podman-with-dockerpy
           steps:
             - run: "sudo apt-get remove docker-ce"
+            - run: "sudo apt-get update"
             - run: "sudo apt-get install podman"
             - run: "systemctl --user start podman.socket"
             - run: "podman info"
