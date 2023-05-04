@@ -32,7 +32,7 @@ workflows:
             - run: "sudo apt-get remove docker-ce"
             - run: "sudo apt-get install podman"
             - run: "systemctl --user start podman.socket"
-            - run: "podman --version"
+            - run: "podman info"
             - run: "CONTAINER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock python3 podmanpy-reproducer.py all"
       - machine-run-tests:
           name: podman-with-dockerpy
@@ -40,5 +40,5 @@ workflows:
             - run: "sudo apt-get remove docker-ce"
             - run: "sudo apt-get install podman"
             - run: "systemctl --user start podman.socket"
-            - run: "podman --version"
+            - run: "podman info"
             - run: "DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock python3 dockerpy-reproducer.py all"
